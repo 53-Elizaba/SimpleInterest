@@ -11,6 +11,9 @@ function App() {
   const [Interest, setInterest] = useState(0);
   const [Rate, setRate] = useState(0);
   const [Year, setYear] = useState(0);
+  const [isPrinciple, setisPrinciple] = useState(true);
+  const [isRate, setisRate] = useState(true)
+  const [isYear, setisYear] = useState(true)
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,9 +23,9 @@ function App() {
     console.log(Rate);
     console.log("......year........");
     console.log(Year);
-      let result=Principle*Year*Rate/100;
-      console.log(result);
-      setInterest(result)
+    let result = Principle * Year * Rate / 100;
+    console.log(result);
+    setInterest(result)
   }
 
   function clearValue() {
@@ -30,7 +33,45 @@ function App() {
     setPrinciple(0);
     setRate(0);
     setYear(0);
-    
+
+  }
+  const validate = (e) => {
+    const { value, name } = e.target;
+    //regular exp: to check whether a given string has particular pattern 
+    //should have forward slash at begin and end
+    //ending of expression is indicated by $ 
+    // start of exp is^
+    if (!!value.match(/^[0-9]+$/)) {
+      if (name === 'principle') {
+        setPrinciple(value)
+        setisPrinciple(true)
+      }
+      else if (name === 'rate') {
+        setRate(value)
+        setisRate(true)
+      }
+
+      else if (name === 'year') {
+        setYear(value)
+        setisYear(true)
+      }
+
+    }
+    else {
+      if (name === 'principle') {
+        setPrinciple(value)
+        setisPrinciple(false)
+      }
+      else if (name === 'rate') {
+        setRate(value)
+        setisRate(false)
+      }
+
+      else if (name === 'year') {
+        setYear(value)
+        setisYear(false)
+      }
+    }
   }
   return (
     <div className='d-flex justify-content-center align-items-center w-100 mt-5 mb-5' style={{ height: "80vh" }}>
@@ -46,19 +87,34 @@ function App() {
           <h1>{'\u20B9'}{Interest}</h1>
           <p>Total Simple Interest</p>
         </div>
-        <form action='' className='mt-5' onSubmit={(e)=>handleSubmit(e)}>
+        <form action='' className='mt-5' onSubmit={(e) => handleSubmit(e)}>
           <div className='mb-3'>
-            <TextField id="outlined-basic" label="Principle amount" variant="outlined" className='w-100' value={Principle} onChange={(e) => setPrinciple(e.target.value)} />
+            <TextField name='principle' id="outlined-basic" label="Principle amount" variant="outlined" className='w-100' value={Principle} onChange={(e) => validate(e)} />
           </div>
+          {!isPrinciple &&
+            <div>
+              <p className='text-danger'>INVALID INPUT</p>
+            </div>
+          }
           <div className='mb-3'>
-            <TextField id="outlined-basic" label="Rate of Interest (pa)%" variant="outlined" className='w-100' value={Rate} onChange={(e) => setRate(e.target.value)} />
+            <TextField name='rate' id="outlined-basic" label="Rate of Interest (pa)%" variant="outlined" className='w-100' value={Rate} onChange={(e) => validate(e)} />
           </div>
+          {!isRate &&
+            <div>
+              <p className='text-danger'>INVALID INPUT</p>
+            </div>
+          }
           <div className='mb-3'>
-            <TextField id="outlined-basic" label="Year(Yr)" variant="outlined" className='w-100' value={Year} onChange={(e) => setYear(e.target.value)} />
+            <TextField name='year' id="outlined-basic" label="Year(Yr)" variant="outlined" className='w-100' value={Year} onChange={(e) => validate(e)} />
           </div>
+          {!isYear &&
+            <div>
+              <p className='text-danger'>INVALID INPUT</p>
+            </div>
+          }
           <div className='mt-5'>
             <Stack direction="row" spacing={1}>
-              <Button type='submit' style={{ height: "50px", width: "200px" }} variant="contained" className='bg-success'>CALCULATE</Button>
+              <Button disabled={!isPrinciple || !isRate || !isYear} type='submit' style={{ height: "50px", width: "200px" }} variant="contained" className='bg-success'>CALCULATE</Button>
               <Button style={{ height: "50px", width: "200px", color: "blue" }} variant="contained" className='bg-light' onClick={clearValue}>CLEAR</Button>
             </Stack>
           </div>
